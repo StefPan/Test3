@@ -30,7 +30,7 @@ public class EntityClient {
 		private String email;
 		private String password;
 		private String indirizzo;
-		private Integer cap;
+		private String cap;
 		private String citta;
 		
 	
@@ -38,7 +38,7 @@ public class EntityClient {
 		public EntityClient () {}
 		
 		public EntityClient(Long id, String nome, String cognome, String email, String password, String indirizzo,
-				Integer cap, String citta) {
+				String cap, String citta) {
 			super();
 			this.id = id;
 			this.nome = nome;
@@ -102,12 +102,12 @@ public class EntityClient {
 			this.indirizzo = indirizzo;
 		}
 		@Column(name="cap")
-		public Integer getCap() {
+		public String getCap() {
 			return cap;
 		}
 
-		public void setCap(Integer cap) {
-			this.cap = cap;
+		public void setCap(String cap2) {
+			this.cap = cap2;
 		}
 		@Column(name="citta")
 		public String getCitta() {

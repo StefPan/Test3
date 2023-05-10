@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
 
+import control.PersonaServiceBeanLocal;
+import jakarta.ejb.EJB;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -16,6 +18,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.EntityClient;
 
 /**
  * Servlet implementation class CreateClient
@@ -23,8 +26,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/createClient")
 public class CreateClient extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+@EJB
+PersonaServiceBeanLocal clientService;
 
-	Connection connection;
 	  
 		/**
 		 * @see Servlet#init(ServletConfig)
@@ -50,24 +54,31 @@ public class CreateClient extends HttpServlet {
 				String cap = request.getParameter("cap");
 				String citta = request.getParameter("citta");
 				
+				EntityClient client= new EntityClient();
+				client.setNome(firstName);
+				client.setCognome(lastName);
+				client.setEmail(email);
+				client.setPassword(password);
+				client.setIndirizzo(indirizzo);
+				client.setCap(cap);
+				client.setCitta(citta);
+				
 				try {
-					Statement statement = connection.createStatement();
-					int result = statement.executeUpdate("INSERT INTO clienti(nome, cognome,email,passwrd, indirizzo, cap, citta)"
-							+ " VALUES('" + firstName + "','" + lastName + "','" + email + "','" + password + "','"+ indirizzo + "','" + cap + "','"
-							+ citta + "');");
+					clientService.inserisci(client);
 				//TODO crea session e passagli resultset cosi passi a jsp che stampa
 			//		session.setAttribute("name", email);
-					PrintWriter out = response.getWriter();
-					if (result > 0) {
+					
 						request.getRequestDispatcher("welcoming.jsp").include(request, response);
-					} else {
-						out.print("<h1>OPS, QUALCOSA E' ANDATO STORTO. ERRORE NELLA CREAZIONE</h1>");
-						request.getRequestDispatcher("formUser.html").include(request, response);
-					}
+					
 					
 				
-				} catch (SQLException e) {
+				} catch (jakarta.ejb.EJBTransactionRolledbackException e) {
 					e.printStackTrace();
+					response.setContentType("text/html");
+					PrintWriter out=response.getWriter();
+					out.print("<h1>OPS, QUALCOSA E' ANDATO STORTO. ERRORE NELLA CREAZIONE</h1>");
+					request.getRequestDispatcher("erroreRegistrazione.jsp").include(request, response);
+					out.close();
 				
 			}
 				}
@@ -77,14 +88,7 @@ public class CreateClient extends HttpServlet {
 		 * @see Servlet#destroy()
 		 */
 		public void destroy() {
-			//chiudo connessione
-			try {
-				System.out.println("destroy()");
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
+			
 		}
 
 		
