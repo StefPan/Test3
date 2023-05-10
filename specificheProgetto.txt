@@ -1,0 +1,7 @@
+ Gestione e conservazione dei dati dei passeggeri
+ 
+ Ho creato EBJ session dove ho operazioni crud.
+ Le servlet per login, registrazione cliente e log out.
+ Jsp per comunicazioni col client.
+ connessione db tramice datasource su persistence.
+ 
